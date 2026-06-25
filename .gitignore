@@ -1,0 +1,6 @@
+.env
+journal*.jsonl
+snapshot.json
+.venv/
+__pycache__/
+*.pyc

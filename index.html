@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HERMES × CLAUDE // QUANT TERMINAL</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script><style>
+:root{--bg:#e7e1d2;--paper:#f4f1e7;--ink:#16140d;--mut:#6f6857;--line:#00000022;--line2:#0000003a;
+--teal:#0f8a78;--grn:#1f8a4c;--red:#c5362f;--amb:#b07d12;--blu:#3360c0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--ink);font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+padding:16px;min-height:100vh;background-image:linear-gradient(#00000007 1px,transparent 1px);background-size:100% 3px;}
+.term{max-width:1180px;margin:0 auto;}
+.topbar{display:flex;align-items:center;gap:14px;border:1px solid var(--line2);background:var(--paper);
+padding:9px 14px;border-radius:3px;flex-wrap:wrap;}
+.mark{display:inline-grid;place-items:center;width:22px;height:22px;border:1px solid var(--ink);
+font-weight:700;border-radius:3px;margin-right:8px;}
+.brand{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;}
+.bname{font-weight:700;letter-spacing:3px;font-size:15px;}
+.x{color:var(--teal);}
+.bsub,.bmid{color:var(--mut);font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+.clock{margin-left:auto;font-size:13px;font-weight:500;letter-spacing:1px;}
+.ticker{display:flex;align-items:center;gap:16px;border:1px solid var(--line);border-top:none;
+background:#efeada;padding:6px 14px;font-size:11px;letter-spacing:1px;overflow-x:auto;white-space:nowrap;margin-bottom:12px;}
+.live{color:var(--red);font-weight:700;letter-spacing:2px;animation:bl 1.4s infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+.box{border:1px solid var(--line2);background:var(--paper);border-radius:3px;margin-bottom:12px;}
+.bx-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 12px;
+border-bottom:1px solid var(--line);font-size:10px;letter-spacing:2px;text-transform:uppercase;background:#efeada;}
+.bx-b{padding:14px;}
+.meta{color:var(--mut);font-size:10px;letter-spacing:1px;text-transform:none;}
+.badge{font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:3px;font-weight:700;}
+.bd-grn{background:#d8efdc;color:var(--grn);border:1px solid #1f8a4c55;}
+.bd-teal{background:#d4ece8;color:var(--teal);border:1px solid #0f8a7855;}
+.bd-amb{background:#f3e7c6;color:var(--amb);border:1px solid #b07d1255;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:12px;}
+.r2{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;}
+@media(max-width:820px){.r3{grid-template-columns:1fr;}.r2{grid-template-columns:1fr;}}
+.big{font-size:34px;font-weight:700;letter-spacing:1px;line-height:1;}
+.biglbl{color:var(--mut);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-top:6px;}
+.mini3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.mlbl{color:var(--mut);font-size:9px;letter-spacing:1px;text-transform:uppercase;}
+.mval{font-size:18px;font-weight:700;margin-top:2px;}
+.riskrow{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:10px;}
+.bar{flex:1;height:7px;background:#ded7c4;border:1px solid var(--line);border-radius:2px;overflow:hidden;}
+.bar>div{height:100%;background:var(--grn);}
+.center{text-align:center;}
+.trophy{font-size:30px;font-weight:700;color:var(--grn);letter-spacing:1px;}
+.kv{display:flex;justify-content:space-between;font-size:11px;padding:5px 0;border-top:1px dashed var(--line);margin-top:4px;}
+.kv span{color:var(--mut);letter-spacing:1px;}
+.grn{color:var(--grn);}.red{color:var(--red);}.teal{color:var(--teal);}
+.pos{color:var(--grn);}.neg{color:var(--red);}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);}
+.step{padding:12px;border-right:1px solid var(--line);}
+.step:last-child{border-right:none;}
+.step .n{font-size:9px;color:var(--mut);letter-spacing:1px;}
+.step .s{font-size:13px;font-weight:700;margin-top:3px;letter-spacing:1px;}
+.step.on{background:var(--teal);color:#fff;}
+.step.on .n{color:#ffffffcc;}
+.mtx{width:100%;border-collapse:collapse;font-size:11px;}
+.mtx th{color:var(--mut);font-weight:500;letter-spacing:1px;padding:6px;text-align:center;}
+.mtx td{padding:0;}
+.cell{margin:2px;padding:7px 4px;border-radius:3px;text-align:center;font-weight:700;font-size:11px;}
+.sym{text-align:left;font-weight:700;letter-spacing:1px;padding:6px 8px;}
+table.tb{width:100%;border-collapse:collapse;font-size:11px;}
+.tb th{text-align:left;color:var(--mut);font-weight:500;letter-spacing:1px;padding:7px 8px;
+border-bottom:1px solid var(--line2);text-transform:uppercase;font-size:10px;}
+.tb td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+.tag{font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:1px;font-weight:700;}
+.t-open{background:#d4ece8;color:var(--teal);}
+.t-close{background:#f3dcd9;color:var(--red);}
+.side-buy{color:var(--grn);font-weight:700;}.side-sell{color:var(--red);font-weight:700;}
+.why{color:var(--mut);font-size:10px;max-width:340px;line-height:1.5;}
+.rsn{color:var(--teal);font-weight:700;}
+.empty{color:var(--mut);font-size:11px;padding:18px;text-align:center;}
+#positions,#events{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+canvas{max-height:200px;}
+@media(max-width:640px){
+ body{padding:10px;}
+ .bname{font-size:13px;letter-spacing:2px;}
+ .clock{font-size:11px;}
+ .big{font-size:28px;}
+ .steps{grid-template-columns:repeat(3,1fr);}
+ .step{border-bottom:1px solid var(--line);}
+ table.tb{min-width:520px;} .mtx{min-width:420px;}
+ .why{max-width:200px;}
+}
+</style><meta http-equiv='refresh' content='60'></head><body><div class="term">
+<div class="topbar">
+  <div class="brand"><span class="mark">H</span><span class="bname">HERMES <span class="x">×</span> CLAUDE</span>
+   <span class="bsub" id="bsub"></span></div>
+  <div class="bmid" id="bmid"></div>
+  <div class="clock" id="gen"></div>
+</div>
+<div class="ticker"><span class="live">● LIVE</span><span id="ticker"></span></div>
+
+<div class="r3">
+  <div class="box">
+    <div class="bx-h"><span>帳戶 // ACCOUNT</span><span class="badge bd-grn" id="safe"></span></div>
+    <div class="bx-b">
+      <div class="big"><span id="equity"></span></div>
+      <div class="biglbl">目前權益 · <span id="retpct"></span></div>
+      <div class="mini3">
+        <div><div class="mlbl">交易</div><div class="mval" id="m_trades"></div></div>
+        <div><div class="mlbl">勝率</div><div class="mval grn" id="m_wr"></div></div>
+        <div><div class="mlbl">盈虧比</div><div class="mval" id="m_rr"></div></div>
+      </div>
+      <div class="riskrow"><span class="mlbl">回撤 RISK</span>
+        <div class="bar"><div id="ddbar"></div></div><span id="ddtxt"></span></div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="bx-h"><span>最佳交易 // BEST</span><span class="badge bd-teal">TRACED</span></div>
+    <div class="bx-b center">
+      <div class="trophy" id="best"></div>
+      <div class="biglbl">單筆最大獲利</div>
+      <div class="kv"><span>已實現</span><b id="realized"></b></div>
+      <div class="kv"><span>獲利因子 PF</span><b id="pf"></b></div>
+      <div class="kv"><span>持倉 / 開倉</span><b id="opencnt"></b></div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="bx-h"><span>權益曲線 // EQUITY</span><span class="meta" id="scope2"></span></div>
+    <div class="bx-b"><canvas id="eqChart"></canvas></div>
+  </div>
+</div>
+
+<div class="box">
+  <div class="bx-h"><span>執行循環 // EXECUTION CYCLE</span><span class="meta">每 5 分鐘一輪</span></div>
+  <div class="steps" id="steps"></div>
+</div>
+
+<div class="r2">
+  <div class="box">
+    <div class="bx-h"><span>技術評級矩陣 // ROBUSTNESS</span><span class="meta">TradingView TA · 資產 × 時間框架</span></div>
+    <div class="bx-b" id="matrix"></div>
+  </div>
+  <div class="box">
+    <div class="bx-h"><span>每筆盈虧 // P&L</span></div>
+    <div class="bx-b"><canvas id="pnlChart"></canvas></div>
+  </div>
+</div>
+
+<div class="box"><div class="bx-h"><span>即時持倉 // OPEN POSITIONS</span></div><div class="bx-b" id="positions"></div></div>
+<div class="box"><div class="bx-h"><span>交易紀錄 // ACTIVITY · 含 Claude 進出場理由</span></div><div class="bx-b" id="events"></div></div>
+</div>
+<script>const DATA={"generated": "2026-06-26 01:19:04", "mode": "sandbox", "exchange": "bingx", "model": "claude-opus-4-7", "live": true, "scope": "本次 run", "start_equity": 100000.0, "equity": 94381.17, "return_pct": -5.62, "realized": 246.69, "win_rate": 57.1, "profit_factor": 1.25, "avg_rr": 0.94, "biggest_win": 542.0, "trades": 7, "fills": 8, "open_count": 1, "equity_series": [{"t": "23:26:37", "v": 96470.3648, "dd": 0.0353}, {"t": "23:32:07", "v": 96470.3648, "dd": 0.0353}, {"t": "23:37:18", "v": 96470.3648, "dd": 0.0353}, {"t": "23:42:32", "v": 96385.2092, "dd": 0.0361}, {"t": "23:47:42", "v": 97017.4247, "dd": 0.0298}, {"t": "23:52:54", "v": 96952.3647, "dd": 0.0305}, {"t": "23:58:07", "v": 96435.1341, "dd": 0.0356}, {"t": "00:04:46", "v": 96425.4362, "dd": 0.0357}, {"t": "00:10:01", "v": 95756.014, "dd": 0.0424}, {"t": "00:15:47", "v": 96431.2799, "dd": 0.0357}, {"t": "00:21:00", "v": 96473.5973, "dd": 0.0353}, {"t": "00:26:09", "v": 96423.566, "dd": 0.0358}, {"t": "00:32:01", "v": 96423.566, "dd": 0.0358}, {"t": "00:37:30", "v": 96423.566, "dd": 0.0358}, {"t": "00:42:59", "v": 96338.1483, "dd": 0.0366}, {"t": "00:48:13", "v": 96338.1483, "dd": 0.0366}, {"t": "00:53:24", "v": 96781.7417, "dd": 0.0322}, {"t": "00:58:36", "v": 96374.9255, "dd": 0.0363}, {"t": "01:03:47", "v": 95589.5554, "dd": 0.0441}, {"t": "01:09:04", "v": 95497.9662, "dd": 0.045}, {"t": "01:14:13", "v": 94919.9266, "dd": 0.0508}], "trade_pnls": [{"t": "23:42:42", "symbol": "BTC", "pnl": 529.39}, {"t": "23:53:07", "symbol": "BTC", "pnl": -230.97}, {"t": "00:05:00", "symbol": "BTC", "pnl": 10.82}, {"t": "00:21:09", "symbol": "BTC", "pnl": 542.0}, {"t": "00:48:23", "symbol": "BTC", "pnl": 155.47}, {"t": "00:58:47", "symbol": "GOLD", "pnl": -557.21}, {"t": "01:09:13", "symbol": "GOLD", "pnl": -202.81}], "by_symbol": {"BTC": 1006.71, "GOLD": -760.02}, "open_positions": [{"symbol": "BTC/USDT:USDT", "side": "short", "contracts": 4.5267, "entry": 59377.2, "mark": 59509.7, "leverage": 5.0, "upnl": -599.6074, "pct": null}], "events": [{"t": "01:09:13", "kind": "平倉", "symbol": "GOLD", "side": "buy", "lev": null, "notional": null, "pnl": -202.81, "reason": "主動平倉", "why": "GOLD 多單主動平倉：(1) 240分鐘/日線均轉空且技術評級轉為中立/賣出，日線 SMA20 在 4271 遠高於現價 4030，顯示中長期趨勢惡化；(2) 現價 4023.8 已跌破進場價 4028.21（浮虧 -0.11%），且 15/60 分鐘價格已回落至斐波 0.16 附近，上攻動能減弱；(3) 市場整體（BTC/SP500 強力賣出）風險偏好惡化，黃金短線反彈空間有限。提前離場保留資金，等待更明確的趨勢機會或更優質標的（如納指 15 分鐘出現反轉信號時做多）。"}, {"t": "00:58:47", "kind": "平倉", "symbol": "GOLD", "side": "buy", "lev": null, "notional": null, "pnl": -557.21, "reason": "主動平倉", "why": "GOLD多單主動平倉：(1)現價4020.77已跌破進場4029.8且浮虧-0.22%，短線動能轉弱；(2)240分/日線SMA20均在上方(4080/4271)且趨勢down，技術評級240='賣出'、D='賣出'，中長期結構不利；(3)15分雖仍up但僅因慣性，60分已轉down且評級'中立'偏弱，反彈力道不足；(4)當前大盤(BTC/SP500/NASDAQ100多時間框架強力賣出)與避險情緒未明顯升溫，GOLD缺乏催化劑；(5)提前止損保留資金，等待更明確的多頭信號或轉做其他標的。風控優先，不賭反彈。"}, {"t": "00:48:23", "kind": "平倉", "symbol": "BTC", "side": "sell", "lev": null, "notional": null, "pnl": 155.47, "reason": "主動平倉", "why": "BTC空單已觸及15分鐘斐波0.5回撤(59300)且技術面持續強力賣出，但60分鐘SMA20仍在60846高位、日線在63284，顯示中長期下跌空間仍大。當前僅+0.12%浮盈，風險收益比不佳。主動平倉後立即重新評估：若價格反彈至59500-59600（接近60分鐘0.382回撤）可考慮更優入場點做空；或觀察GOLD 15/60分鐘雙重上升趨勢（現價4027 vs SMA20:4018/3997）配合低retrace 0.203，做多GOLD perp更具潛力。先平倉保本，等更明確機會。"}, {"t": "00:21:09", "kind": "平倉", "symbol": "BTC", "side": "sell", "lev": null, "notional": null, "pnl": 542.0, "reason": "主動平倉", "why": "BTC空單已獲利+0.38%，但多時間框架技術面開始分化：15分鐘轉中立(score -0.31)、60分鐘仍賣出但240/D維持強力賣出。價格59737已接近0.382斐波那契支撐59580，且距離我的停損60575僅剩1.4%空間、風險報酬比惡化。當前位置接近回撤31.6%中繼區，短線可能出現技術性反彈。提前獲利了結，保留資金等待更明確的方向訊號或更好的重新進場點位。"}, {"t": "00:05:00", "kind": "平倉", "symbol": "BTC", "side": "sell", "lev": null, "notional": null, "pnl": 10.82, "reason": "主動平倉", "why": "主動平倉 BTC 空單。雖浮盈微小(+0.02%)，但多時間框架分析顯示：15分鐘已轉 down 但接近 Fib 0.382 支撐(59579)、價格在此區間反覆測試形成短期盤整，且 15 分鐘技術評級從「強力賣出」降至「賣出」(-0.534)，顯示空頭動能減弱。當前價 59518 距離我的止損 60450 空間有限(~1.6%)，繼續持有風險/報酬比不佳。更重要的是：GOLD 在 15 和 60 分鐘框架呈現明確上升趨勢(均價上穿 SMA20、15 分鐘技術評級「買進」+0.624)，更值得配置資金。先平倉 BTC 空單鎖定微利，下輪開 GOLD 多單捕捉更清晰的趨勢機會。"}, {"t": "23:53:07", "kind": "平倉", "symbol": "BTC", "side": "sell", "lev": null, "notional": null, "pnl": -230.97, "reason": "主動平倉", "why": "BTC空單浮虧-0.1%，雖損失極小但多框架技術評級全線「強力賣出」、15/60分鐘價格已觸及0.5斐波那契回撤（59300）支撐區且開始橫盤整理，短線反彈風險上升。60分鐘SMA20在60919遠高於現價，空頭結構完整但動能減弱。當前equity 96937→若BTC反彈至止損60437將虧損2%本金。考量：1)空單已無明顯下跌動能 2)GOLD 15分鐘突破、技術評級「強力買進」且趨勢up、價格站上SMA20且僅回撤3.8%（極強勢）提供更優質做多機會 3)提前止損BTC釋放資金捕捉GOLD上升趨勢，風報比更佳。主動離場換倉。"}, {"t": "23:42:42", "kind": "平倉", "symbol": "BTC", "side": "sell", "lev": null, "notional": null, "pnl": 529.39, "reason": "主動平倉", "why": "主動平倉BTC空單，雖浮盈+0.27%但技術面出現轉折信號：15分鐘斐波那契回撤0.552已觸及0.618支撐區(59020)，價格59178守在此關鍵位上方，若反彈將快速觸發60374止損。同時各時間框架均「強力賣出」標籤顯示空方已充分釋放，繼續持有風險收益比不佳。提前鎖定微利，保留資金捕捉更優質機會—GOLD在15/60分鐘轉多且技術評級「買進」，斐波那契延伸1.272目標4062，或HYPE在日線0.382黃金分割支撐61.23附近築底，待確認後再進場。"}, {"t": "01:14:37", "kind": "開倉", "symbol": "BTC", "side": "sell", "lev": 3, "notional": 179052.13, "pnl": null, "reason": "", "why": "BTC 多時間框架空頭共振：60/240/D 全部強力賣出，價格 59418 站在所有 SMA 之下（60m 60764、240m 62152、D 63290），且 60m 在 0.382 fib (59579) 之下顯示下行動能未衰。入場 59420，停損 60050 設在 0.236 fib (59926) 與 60m SMA 之上預留緩衝，目標 58400 下穿 0.786 fib (58622)抓深回測，R:R 約 1.6。槓桿 3x、風險 2% 反映訊號高度一致；trail 0.015/0.005 在價格再跌 1.5% 後鎖小利防反彈。"}, {"t": "01:04:03", "kind": "開倉", "symbol": "GOLD", "side": "buy", "lev": 3, "notional": 182914.65, "pnl": null, "reason": "", "why": "黃金在15分和60分雙框架確認上升趨勢，現價4029.92位於斐波那契回撤0.167（極淺回檔），技術評級60分中立但15分買進信號明確。當前價格恰好在60分SMA20(3998.67)上方站穩，回測支撐後續漲動能強。目標Fib延伸1.618@4096.62，風險報酬比1:1.27合理。止損設於Fib 0.786@3977.27，若跌破代表結構失效。用2.5%風險+3倍槓桿捕捉短中線反彈，並設定獲利1.2%後啟動移動止損鎖住0.8%利潤，防範假突破。其他標的：BTC/HYPE/SP500/NASDAQ全線技術面偏空且遠離SMA20，不適合進場。"}, {"t": "00:53:36", "kind": "開倉", "symbol": "GOLD", "side": "buy", "lev": 3, "notional": 248314.12, "pnl": null, "reason": "", "why": "GOLD 15m 呈現最清晰的多頭結構：價格站穩 SMA20 上方(4033 vs 4018)、技術評級轉買進(+0.534)、斐波回撤僅 13.2% 顯示回調淺且動能強。60m 也剛突破 SMA20 轉多。雖然 240m/D 仍看空，但短線反彈訊號明確，適合快速進出。其他標的：BTC/HYPE/SP500/NASDAQ 全線技術面偏空且價格低於均線，無明確機會。進場 4033、止損設於斐波 0.618 支撐 3994(-1%)、目標斐波延伸 1.618@4094(+1.5%)，風險報酬 1:1.5。設 1.5% 觸發移動止損鎖 0.8% 利潤，防止快速回吐。"}, {"t": "00:37:58", "kind": "開倉", "symbol": "BTC", "side": "sell", "lev": 3, "notional": 171058.28, "pnl": null, "reason": "", "why": "BTC 多時間框架空頭共振：15m/60m/240m/D 全部 trend=down 且價格低於 SMA20。技術評級 60m -0.982、240m -1.206、D -1.116 連續強力賣出，動能一致。價格 59430 已跌破 0.5 fib(59300附近邊緣)後反抽乏力，停損 60100 設於 15m SMA20(6036)與 0.236 fib(59926) 上方，方向正確且結構清晰。TP 58200 對應 0.786 fib(58622) 下方延伸目標，R:R ~1.84。3x 槓桿+2% 風險反映高勝率多框共振，trail 2% 觸發鎖 1% 保護急速下殺後的回補。"}, {"t": "00:10:46", "kind": "開倉", "symbol": "BTC", "side": "sell", "lev": 3, "notional": 151067.71, "pnl": null, "reason": "", "why": "BTC全時間框架(15/60/240/D)皆為down trend,且4H/D技術評級為強力賣出(-1.024/-1.116),價格遠低於所有SMA(D-SMA20=63317,4H=62178,1H=60880),屬空頭排列。現價5930正好觸及短線0.236 fib回撤(59926)及略低於15m SMA20(60214)的反彈阻力區,提供低風險空單入場點。停損60520放在0%基準上方(swing high約60485),約0.95%的價格逆走。停利58500貼近0.786 fib(58622)下方,風報比約2.5。槓桿3x、風險1.5%反映4H+D雙重強力賣出的高勝率順勢空。設追蹤止損3%觸發、鎖1%以保護順勢延伸。HYPE時間框架不一致,SP500/NASDAQ/GOLD多為中立,優選BTC清晰空頭結構。"}, {"t": "23:58:51", "kind": "開倉", "symbol": "BTC", "side": "sell", "lev": 2, "notional": 66450.95, "pnl": null, "reason": "", "why": "BTC 全時間框架下跌結構：15m/60m/240m/D 趨勢皆 down，60m/240m/D 技術評級為強力賣出。價格 59536 遠低於所有 SMA（D SMA2063296，差距 6%），顯示中長期空頭主導。60m fib 顯示前波上漲已被回撤 40%，當前正卡在 0.382 (59579) 與 0.5 (59300) 之間，是反彈失敗、續跌的延續位置。停損設於 60400（在 0.236 反壓 59926 與 15m SMA20 60284 之上），停利目標 58300（接近 0.786 區 58622 之下、前波低點），R:R≈1.32。槓桿 2x，風險 1%，啟動 2% 順向時鎖 1% 保護利潤。"}, {"t": "23:47:54", "kind": "開倉", "symbol": "BTC", "side": "sell", "lev": 3, "notional": 125173.57, "pnl": null, "reason": "", "why": "BTC多時間框架強力賣出信號一致（60/240/D均-1以上），現價59350已跌破0.5斐波回撤59300且遠低於所有均線（60框SMA20在60921）。60框技術評分-1.072、MA指標-1.6顯示下跌動能強勁。下方支撐：0.618回撤59020→目標57800（2.6%空間）。上方阻力密集60500作為止損（1.9%風險），風報比1.37可接受。用2.5%資金+3倍槓桿捕捉這波回撤深化，設1.5%獲利啟動移動止損鎖0.8%防快速反彈。"}, {"t": "23:37:31", "kind": "開倉", "symbol": "BTC", "side": "sell", "lev": 3, "notional": 170522.85, "pnl": null, "reason": "", "why": "BTC 多時間框架共振做空信號：(1) 60分/4小時/日線全部「強力賣出」技術評級，60分 -0.982、240分 -1.206、日線 -1.116，MA全面空頭排列；(2) 價格 59392 已跌破 0.5 斐波那契回撤位 59300，正測試 0.618 支撐 59020，回撤深度 0.461 顯示下行動能強勁；(3) 60分 SMA20 在 60923 形成明確壓力，價格遠低於均線 -2.5%；(4) 日線趨勢從 63291 大幅下跌，當前仍處弱勢；(5) 進場 59392、止損設於 60400（回到 0.382 上方確認反轉）、目標 58300（接近 0.786 深度回撤），風報比 1:1.08 可接受；(6) 使用 3 倍槓桿、3% 風險捕捉中短線趨勢，設定獲利 1.5% 啟動移動止損鎖 0.8% 利潤，防範急速反彈但保留下跌空間"}], "matrix": [{"symbol": "BTC", "cells": [{"tf": "15", "score": -0.35, "label": "中立"}, {"tf": "60", "score": -0.8, "label": "賣出"}, {"tf": "240", "score": -1.21, "label": "強力賣出"}, {"tf": "D", "score": -1.12, "label": "強力賣出"}]}, {"symbol": "HYPE", "cells": [{"tf": "15", "score": 0.58, "label": "買進"}, {"tf": "60", "score": -0.22, "label": "中立"}, {"tf": "240", "score": -0.71, "label": "賣出"}, {"tf": "D", "score": -0.18, "label": "中立"}]}, {"symbol": "SP500", "cells": [{"tf": "15", "score": -0.79, "label": "賣出"}, {"tf": "60", "score": -0.93, "label": "強力賣出"}, {"tf": "240", "score": -0.03, "label": "中立"}, {"tf": "D", "score": -0.16, "label": "中立"}]}, {"symbol": "NASDAQ100", "cells": [{"tf": "15", "score": 0.45, "label": "中立"}, {"tf": "60", "score": -0.62, "label": "賣出"}, {"tf": "240", "score": -0.08, "label": "中立"}, {"tf": "D", "score": 0.22, "label": "中立"}]}, {"symbol": "GOLD", "cells": [{"tf": "15", "score": 0.67, "label": "買進"}, {"tf": "60", "score": -0.18, "label": "中立"}, {"tf": "240", "score": -0.35, "label": "中立"}, {"tf": "D", "score": -0.89, "label": "賣出"}]}], "tfs": ["15", "60", "240", "D"]};</script><script>
+const f=(n,d=2)=>(n==null||n==="")?"–":Number(n).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+const cls=v=>v>0?"pos":(v<0?"neg":"");
+const S=(id,v)=>document.getElementById(id).textContent=v;
+
+S('bsub', DATA.scope+' · 5M AUTONOMOUS AGENT');
+S('bmid', DATA.mode.toUpperCase()+' · '+DATA.exchange.toUpperCase()+' · '+DATA.model);
+S('gen', DATA.generated.slice(11)+'  '+(DATA.live?'LIVE':'JOURNAL'));
+S('scope2', DATA.scope);
+
+// 帳戶
+S('equity', f(DATA.equity,2));
+const rp=document.getElementById('retpct');
+rp.textContent=(DATA.return_pct>=0?'+':'')+DATA.return_pct+'%'; rp.className=cls(DATA.return_pct);
+S('m_trades', DATA.trades); S('m_wr', DATA.win_rate+'%'); S('m_rr', DATA.avg_rr);
+const dd=DATA.equity_series.length?DATA.equity_series[DATA.equity_series.length-1].dd:0;
+document.getElementById('ddbar').style.width=Math.min(100,Math.round(dd/0.15*100))+'%';
+document.getElementById('ddbar').style.background=dd>=0.12?'#c5362f':(dd>=0.08?'#b07d12':'#1f8a4c');
+S('ddtxt',(dd*100).toFixed(1)+'%');
+const safe=document.getElementById('safe');
+safe.textContent=dd>=0.12?'CAUTION':'SAFE'; safe.className='badge '+(dd>=0.12?'bd-amb':'bd-grn');
+
+// 最佳
+document.getElementById('best').textContent=(DATA.biggest_win>=0?'+':'')+f(DATA.biggest_win);
+S('realized',(DATA.realized>=0?'+':'')+f(DATA.realized));
+S('pf', DATA.profit_factor);
+S('opencnt', DATA.open_count+' / '+DATA.fills);
+
+// ticker
+document.getElementById('ticker').innerHTML=(DATA.matrix||[]).map(m=>{
+ const c=m.cells.find(x=>x.tf==='240')||m.cells[0]||{};
+ const col=c.score==null?'':(c.score>=0.15?'grn':(c.score<=-0.15?'red':''));
+ return `<span><b>${m.symbol}</b> <span class="${col}">${c.label||'–'} ${c.score==null?'':((c.score>=0?'+':'')+c.score)}</span></span>`;
+}).join('   ·   ') || 'TradingView sidecar 未連線';
+
+// 執行步進
+const ST=['SCAN','DETECT','RISK','SIZE','FILL','SETTLE'];
+const on=Math.floor(Date.now()/3000)%ST.length;
+document.getElementById('steps').innerHTML=ST.map((s,i)=>
+ `<div class="step ${i===on?'on':''}"><div class="n">0${i+1}</div><div class="s">${s}</div></div>`).join('');
+
+// 權益曲線
+const es=DATA.equity_series;
+new Chart(document.getElementById('eqChart'),{type:'line',
+ data:{labels:es.map(p=>p.t),datasets:[{data:es.map(p=>p.v),borderColor:'#0f8a78',borderWidth:1.8,
+  fill:true,backgroundColor:'#0f8a7820',tension:.2,pointRadius:0}]},
+ options:{plugins:{legend:{display:false}},scales:{
+  x:{ticks:{color:'#6f6857',maxTicksLimit:5,font:{size:9}},grid:{color:'#00000010'}},
+  y:{ticks:{color:'#6f6857',font:{size:9}},grid:{color:'#00000010'}}}}});
+
+// 每筆盈虧
+const tp=DATA.trade_pnls;
+new Chart(document.getElementById('pnlChart'),{type:'bar',
+ data:{labels:tp.map(p=>p.symbol),datasets:[{data:tp.map(p=>p.pnl),
+  backgroundColor:tp.map(p=>p.pnl>=0?'#1f8a4c':'#c5362f'),borderRadius:2}]},
+ options:{plugins:{legend:{display:false}},scales:{
+  x:{ticks:{color:'#6f6857',font:{size:9}},grid:{display:false}},
+  y:{ticks:{color:'#6f6857',font:{size:9}},grid:{color:'#00000010'}}}}});
+
+// 技術評級矩陣
+function heat(s){if(s==null)return['#e6e1d3','#9a937f'];
+ if(s>=0.5)return['#1f8a4c','#ffffff']; if(s>=0.15)return['#a9d39a','#1d3a1d'];
+ if(s<=-0.5)return['#c5362f','#ffffff']; if(s<=-0.15)return['#e2aba4','#4a1410'];
+ return['#e7d9a8','#5a4a12'];}
+const mx=DATA.matrix||[];
+document.getElementById('matrix').innerHTML = mx.length? (
+ `<table class="mtx"><tr><th class="sym">資產</th>`+DATA.tfs.map(t=>`<th>${t}</th>`).join('')+`</tr>`+
+ mx.map(m=>`<tr><td class="sym">${m.symbol}</td>`+m.cells.map(c=>{const h=heat(c.score);
+   return `<td><div class="cell" style="background:${h[0]};color:${h[1]}">${c.score==null?'–':((c.score>=0?'+':'')+c.score)}</div></td>`;}).join('')+`</tr>`).join('')
+ +`</table>`) : '<div class="empty">需啟動 TradingView sidecar 才有技術評級</div>';
+
+// 持倉
+const pos=DATA.open_positions;
+document.getElementById('positions').innerHTML = pos.length? (
+ `<table class="tb"><tr><th>標的</th><th>方向</th><th>數量</th><th>進場</th><th>標記</th><th>槓桿</th><th>未實現</th></tr>`+
+ pos.map(p=>`<tr><td><b>${p.symbol}</b></td>
+   <td class="side-${(p.side||'').toLowerCase()}">${(p.side||'').toUpperCase()||'–'}</td>
+   <td>${f(p.contracts,4)}</td><td>${f(p.entry)}</td><td>${f(p.mark)}</td>
+   <td>${p.leverage||'–'}x</td>
+   <td class="${cls(p.upnl)}">${p.upnl==null||p.upnl===''?'–':((p.upnl>=0?'+':'')+f(p.upnl))}</td></tr>`).join('')
+ +`</table>`) : '<div class="empty">目前無持倉</div>';
+
+// 交易紀錄
+const ev=DATA.events;
+document.getElementById('events').innerHTML = ev.length? (
+ `<table class="tb"><tr><th>時間</th><th>動作</th><th>標的</th><th>方向</th><th>槓桿</th><th>盈虧</th><th>原因 / Claude 理由</th></tr>`+
+ ev.map(e=>`<tr><td>${e.t}</td>
+   <td><span class="tag ${e.kind==='開倉'?'t-open':'t-close'}">${e.kind}</span></td>
+   <td><b>${e.symbol}</b></td>
+   <td class="side-${(e.side||'').toLowerCase()}">${(e.side||'').toUpperCase()||'–'}</td>
+   <td>${e.lev?e.lev+'x':'–'}</td>
+   <td class="${e.pnl==null?'':cls(e.pnl)}">${e.pnl==null?'–':((e.pnl>=0?'+':'')+f(e.pnl))}</td>
+   <td class="why">${e.reason?('<span class=rsn>['+e.reason+']</span> '):''}${(e.why||'').slice(0,180)}</td></tr>`).join('')
+ +`</table>`) : '<div class="empty">本次 run 尚無交易</div>';
+</script></body></html>
